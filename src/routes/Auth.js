@@ -1,8 +1,12 @@
 import {
   createUserWithEmailAndPassword,
-  getAuth, GithubAuthProvider, GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup
+  GithubAuthProvider,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signInWithPopup
 } from "firebase/auth";
 import { useState } from "react";
+import { fAuth } from "../firebase";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -23,13 +27,12 @@ const Auth = () => {
     event.preventDefault();
     try {
       let data;
-      const auth = getAuth();
       if (newAccount) {
         // create account
-        data = await createUserWithEmailAndPassword(auth, email, password);
+        data = await createUserWithEmailAndPassword(fAuth, email, password);
       } else {
         // log in
-        data = await signInWithEmailAndPassword(auth, email, password);
+        data = await signInWithEmailAndPassword(fAuth, email, password);
       }
       console.log(data);
     } catch (error) {
@@ -40,7 +43,6 @@ const Auth = () => {
   const toggleAccount = () => setNewAccount((prev) => !prev);
   const onSocialClick = async (event) => {
     const { name } = event.target;
-    const auth = getAuth();
     let provider;
     if (name === 'google') {
       provider = new GoogleAuthProvider();
@@ -50,7 +52,7 @@ const Auth = () => {
       provider = new GithubAuthProvider();
     }
     try {
-      const result = await signInWithPopup(auth, provider);
+      const result = await signInWithPopup(fAuth, provider);
       const credential = GoogleAuthProvider.credentialFromResult(result);
       console.log(credential);
     } catch (error) {
