@@ -32,10 +32,12 @@ function App() {
   useEffect(() => {
     sse();
     onAuthStateChanged(fAuth, (user) => {
-      console.log('???');
-      console.log(user);
       if (user) {
-        setUserObject(user);
+        setUserObject({
+          displayName: user.displayName,
+          uid: user.uid,
+          updateProfile: (args) => user.updateProfile(args),
+        });
       } else {
         setUserObject(null);
       }
