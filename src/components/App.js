@@ -29,15 +29,17 @@ function App() {
     //   }
     // });
   }
+
+  const refreshUser = () => {
+    const user = fAuth.currentUser;
+    setUserObject({...user});
+  }
+
   useEffect(() => {
     sse();
     onAuthStateChanged(fAuth, (user) => {
       if (user) {
-        setUserObject({
-          displayName: user.displayName,
-          uid: user.uid,
-          updateProfile: (args) => user.updateProfile(args),
-        });
+        setUserObject(user);
       } else {
         setUserObject(null);
       }
@@ -47,7 +49,7 @@ function App() {
   return (
     <>
       {init ? (
-        <AppRouter isLoggedIn={Boolean(userObject)} userObj={userObject} />
+        <AppRouter isLoggedIn={Boolean(userObject)} userObj={userObject} refreshUser={refreshUser} />
       ) : "Initializing..."}
       <footer>&copy; Nwitter {new Date().getFullYear()}</footer>
     </>
